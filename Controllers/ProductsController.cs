@@ -11,15 +11,20 @@ namespace WebApplication1.Controllers
 {
     public class ProductsController : Controller
     {
+        ProductsDAO products;
+
+        public ProductsController()
+        {
+            products = new ProductsDAO();
+        }
+
         public IActionResult Index()
         {
-            ProductsDAO products = new ProductsDAO();
             return View(products.GetAllProducts());
         }
 
         public IActionResult SearchResults(string searchTerm)
         {
-            ProductsDAO products = new ProductsDAO();
             List<ProductModel> productList = products.SearchProducts(searchTerm);
             return View("index", productList);
         }
@@ -31,27 +36,34 @@ namespace WebApplication1.Controllers
 
         public IActionResult ShowDetails(int id)
         {
-            ProductsDAO products = new ProductsDAO();
             return View(products.GetProductById(id));
+        }
+
+        public IActionResult ShowOneProductJSON(int id)
+        {
+            return Json(products.GetProductById(id));
         }
 
         public IActionResult Edit(int id)
         {
-            ProductsDAO products = new ProductsDAO();
             ProductModel product = products.GetProductById(id);
             return View("ShowEdit", product);
         }
 
         public IActionResult ProcessEdit(ProductModel product)
         {
-            ProductsDAO products = new ProductsDAO();
             products.Update(product);
             return View("Index", products.GetAllProducts());
         }
 
+        public IActionResult ProcessEditReturnPartial (ProductModel product)
+        {
+            products.Update(product);
+            return PartialView("_productCard", product);
+        }
+
         public IActionResult Delete(int id)
         {
-            ProductsDAO products = new ProductsDAO();
             ProductModel product = products.GetProductById(id);
             products.Delete(product);
             return View("Index", products.GetAllProducts());
@@ -64,7 +76,6 @@ namespace WebApplication1.Controllers
 
         public IActionResult ProcessCreate(ProductModel product)
         {
-            ProductsDAO products = new ProductsDAO();
             products.Insert(product);
             return View("ShowDetails", product);
         }
