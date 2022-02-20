@@ -21,28 +21,37 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ProductModel>> Index()
+        public ActionResult<IEnumerable<ProductModelDTO>> Index()
         {
-            return products.GetAllProducts();
+            return products.GetAllProducts().Select(p => new ProductModelDTO(p)).ToList();
         }
-        
-        [HttpGet("searchproducts/{searchTerm}")]
-        public ActionResult<IEnumerable<ProductModel>> SearchResults(string searchTerm)
+
+        [HttpGet("SearchProducts/{searchTerm}")]
+        public ActionResult<IEnumerable<ProductModelDTO>> SearchProducts(string searchTerm)
         {
-            return products.SearchProducts(searchTerm);
+            return products.SearchProducts(searchTerm).Select(p => new ProductModelDTO(p)).ToList();
         }
-        
+
         [HttpGet("showoneproduct/{Id}")]
-        public ActionResult<ProductModel> ShowOneProduct(int id)
+        public ActionResult<ProductModelDTO> ShowOneProduct(int id)
         {
-            return products.GetProductById(id);
+            ProductModel p = products.GetProductById(id);
+            ProductModelDTO pDTO = new ProductModelDTO(p);
+            return pDTO;
         }
 
         [HttpPost("InsertOne")]
         //post action
         //expecting a product in json format in the body of the request
-        public ActionResult<int> InsertOne(ProductModel product)
+        public ActionResult<int> InsertOne(ProductModelDTO p)
         {
+            ProductModel product = new ProductModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Description = p.Description
+            };
             int newId = products.Insert(product);
             return newId;
         }
@@ -50,12 +59,20 @@ namespace WebApplication1.Controllers
         [HttpPut("ProcessEdit")]
         //put request
         //expect json formatted object in the body of the request. id number must match the item being modified
-        public ActionResult<ProductModel> ProcessEdit(ProductModel product)
+        public ActionResult<ProductModelDTO> ProcessEdit(ProductModelDTO p)
         {
+            ProductModel product = new ProductModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Price = p.Price,
+                Description = p.Description
+            };
             products.Update(product);
-            return products.GetProductById(product.Id);
+            ProductModel modifiedProduct = products.GetProductById(product.Id);
+            return new ProductModelDTO(modifiedProduct);
         }
-        
+
         [HttpDelete("DeleteOne/{id}")]
         public ActionResult<bool> DeleteOne(int id)
         {

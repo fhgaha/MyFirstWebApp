@@ -31,10 +31,10 @@
 
         //get values from the input field and create a json object to submit to the controller to be saved
         var Product = {
-            "Id": $("#modal-input-id").val(),
-            "Name": $("#modal-input-name").val(),
-            "Price": $("#modal-input-price").val(),
-            "Description": $("#modal-input-description").val()
+            "Id": $("#modal-input-id").val().trim(),
+            "Name": $("#modal-input-name").val().trim(),
+            "Price": $("#modal-input-price").val().trim(),
+            "Description": $("#modal-input-description").val().trim()
         }
 
         console.log(Product);
