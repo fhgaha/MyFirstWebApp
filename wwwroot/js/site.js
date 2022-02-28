@@ -14,7 +14,7 @@
             },
             url: "/products/ShowOneProductJSON",  //this tell go to ShowOneProductJSON. Although method 
             //returns not a view but Json, the url path should point at place where that view would be placed
-            //or you can interpret it as name of 'controller/name of method'
+            //or you can interpretate it as name of 'controller/method'
             success: function (data) {  //data - what method from 'url' with parameter 'data' will return
                 console.log(data);
 
